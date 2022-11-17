@@ -1,0 +1,137 @@
+---
+title: "2. Introduction à ggplot"
+author: "Dr. ASRI"
+date: "2022-11-16"
+output: 
+  pdf_document:
+    toc: true
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+## 2.2. ggplot2
+
+### a. Introduction (ppt)
+
+### b. les données utilisées
+
+Pour garder le même cheminement on va utiliser la même base de données **iris** pour illustrer ggplot2
+
+```{r}
+iris <- get(data(iris))
+```
+
+
+### b. les différentes couches
+
+#### premier graphique 
+
+pour dessiner une graphique il faut utiliser les trois couches principales pour dessiner un nuage de point de Speal Length vs Sepal Width
+
+```{r}
+## couche des donnée
+
+## couches esthétique + appel de la fonction ggplot
+
+## couche geométrie
+```
+
+#### Utiliser l'esthétique en géométrie
+
+reprendre le même code de la section précédente
+
+```{r}
+## couche des donnée
+
+## appel de la fonction ggplot
+
+## couche geométrie + couche esthétique
+```
+
+#### argument sans esthétique 
+
+reprendre le même code en changeant la couleur la taille et la forme des points
+
+```{r}
+## couche des donnée
+
+## couches esthétique + appel de la fonction ggplot
+
+## couche geométrie + modifications
+```
+
+### faites attention à l'esthétique 
+```{r}
+## coleur à l'intérieur de l'esthétique
+
+## couleur à l'extérieur
+```
+
+#### les échelles
+
+Utiliser **scale_*()** pour ajouter une couche d'échelle
+
+```{r}
+### graphique 
+
+## couche échelle
+```
+
+#### échelle de couleurs
+
+changer les couleur de la variable species
+
+```{r}
+### graphique
+
+## échelle de couleurs
+```
+
+#### autres géométries
+
+Tracer une boite à moustaches pour Sepal Width
+
+```{r}
+### Graphique
+```
+
+Tracer un histogramme pour Sepal Length
+
+```{r}
+### Graphique
+```
+
+Tracer une densité pour Petal Width
+
+```{r}
+### Graphique
+```
+
+Tracer un diagramme à baton pour species
+
+```{r}
+### Graphique
+```
+
+Ajouter des étiquettes au graphique précédent
+
+```{r}
+### Graphique
+```
+
+#### labs
+
+Modifier le dernier graphique avec labs
+
+```{r}
+### graphique
+
+## labs()
+```
+
+#### Les facettes 
+
+
+#### les thèmes
