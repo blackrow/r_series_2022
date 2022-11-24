@@ -1,0 +1,290 @@
+---
+title: "1. R et tidyverse"
+author: "Dr. ASRI"
+date: "2022-11-10"
+output: 
+  pdf_document:
+    toc: true
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+# Introduction
+
+# 1. Les bases du logiciel
+
+## 1.1. Les objets
+
+### l'affectation des objets : 
+
+Le langage R est basé sur la création de divers objets. Il faut nommer l'objet et lui affecté une valeur, une opération, le résultat d'une fonction, ....
+
+```{r}
+objet <- "Bienvenu"
+objet
+```
+
+```{r}
+objet <- 1/50
+objet
+```
+
+```{r}
+objet <- sum(1:2)
+objet
+```
+
+### La classe d'un objet
+
+Chaque objet ait une classe. On peut connaitre la classe d'un objet par la fonction **class()**
+
+```{r}
+class(objet)
+```
+
+Il existe plusieurs classes dans R. 5 classes atomiques (caractère, numérique, entier, logique et complex) et les autres classes de second ordre comme les vecteurs, les matrices, les listes, les data frames, ....
+
+```{r}
+class("bienvenue")
+
+class(5)
+
+class(10L)
+
+class(5i)
+
+class(TRUE)
+```
+
+## 1.2. Les vecteurs
+
+Le travail d'un statisticien est souvent basé sur un ensemble de données (échantillon ou population). La classe d'objet la plus simple dans R qui permet de stocker un vecteur de données est **les vecteurs**. On peut créer un vecteur en utilisant la fonction **c()**
+
+```{r}
+vecteur <- c(1, 10, 15, 100)
+vecteur
+```
+
+Le vecteur doit contenir une seule classe de données pour faciliter l'analyse et le stockage de ce vecteur.
+
+```{r}
+vecteur <- c("a", "b" , "c")
+vecteur
+```
+
+
+```{r}
+vecteur <- c(TRUE, TRUE, FALSE)
+vecteur
+```
+
+
+## 1.3. Les matrices
+
+Ne sont pas souvent utilisés mais représente un outil basique
+
+```{r}
+matrice <- matrix(1:10, nrow = 5, ncol = 2)
+matrice
+```
+
+
+## 1.4.  Les data frames 
+
+Le format tabulaire associé avec le logiciel R
+
+```{r}
+données <- data.frame(x = 1:10, 
+                      y = rep(c(TRUE, FALSE), 5),
+                      z = LETTERS[1:10])
+données
+```
+
+
+## 1.5. Importation des données
+
+### Importation des données à partir du disque 
+
+Pour lire des données à partir du disque, il faut d'abord préciser le répertoire actif utilisé.
+
+On change le répertoire dans l'environnment global du Rstudio
+
+Puis on doit utiliser les fonctions nécessaires pour la lecture des données selon le format proposé.
+
+```{r}
+data <- read.csv("exemple.csv")
+```
+### package
+
+```{r}
+install.packages("readxl")
+
+library(readxl)
+
+readr::write_excel_csv(données, "essai2.xls")
+```
+
+
+### Importation des données d'autres sources
+
+On peut utiliser le logiciel R pour lire des données de différentes sources comme les packages ou le web.
+
+## 1.6. Exportation des données 
+
+
+Tous les fichiers importés par cette manière sont affecté à des data frames.
+
+
+```{r}
+write.csv(données, "essai.csv")
+```
+
+
+# 2. L'écosystème tidyverse
+
+On va essayer d'explorer le potentiel de l'écosystème en utilisant la base **iris** qui correpond à des différents caractéristiques des fleurs d'iris
+```{r}
+library(tidyverse)
+```
+
+
+```{r}
+iris <- get(data(iris))
+iris
+```
+
+## 2.1. dplyr
+
+### select
+
+```{r}
+iris %>%
+  select(Sepal.Length)
+```
+```{r}
+iris %>%
+  select(Petal.Width)
+
+iris %>%
+  select(Petal.Width) %>%
+  as.vector() %>%
+  unlist() %>%
+  mean()
+```
+
+
+### filter
+
+```{r}
+iris %>%
+  filter(Sepal.Length < 5 )
+```
+```{r}
+iris %>% 
+  filter(Species=="virginica", Sepal.Width < 3)
+```
+
+
+### mutate
+
+```{r}
+iris %>%
+  mutate(Sepal = Sepal.Length + Sepal.Width)
+```
+```{r}
+iris %>%
+  mutate(Sepal = Sepal.Length + Sepal.Width) %>%
+  mutate(Sepal = Sepal + 1)
+```
+
+```{r}
+session <- rep("session 1", 150)
+session 
+```
+
+
+```{r}
+iris %>%
+  mutate(session = session)
+```
+
+```{r}
+iris %>%
+  mutate(session = "session 1")
+```
+
+```{r}
+iris %>%
+  mutate(Sepal = Sepal.Length + Sepal.Width) %>%
+  filter(Sepal < 7)
+```
+
+
+
+### arrange 
+
+```{r}
+iris %>%
+  arrange(Sepal.Length)
+
+iris %>%
+  arrange(-Sepal.Length)
+```
+
+
+### summarize
+
+```{r}
+iris %>%
+  summarise(moyenne = mean(Sepal.Width))
+```
+
+
+### group_by
+
+```{r}
+iris %>%
+  group_by(Species) %>%
+  summarise(moyenne = mean(Petal.Width))
+```
+
+
+### case_when
+
+```{r}
+iris %>%
+  mutate(classe = case_when(Species == "virginica" | Species == "versicolor" ~ "classe1",
+                            TRUE                                             ~ "classe2")) 
+```
+
+
+##  iris 
+
+1. créer une variable qui calcule la somme des pétal
+2. créer une variable qui divise la longeur du spéal sur la longueur du pétal (taux)
+3. filter par ce taux < 1
+4. créer une variable qui a le taux <0.5 ---> "c1" et taux >= 0.5 ---> "c2" 
+5. calculer la moyenne de ce taux par c1 ou c2
+6. arranger le résultat du prés petit au plus grand
+
+```{r}
+iris %>%
+  mutate(Petal = Petal.Length + Petal.Width,
+         taux = Sepal.Length / Petal.Length) %>%
+  filter(taux < 4)%>%
+  mutate(c = case_when(taux < 3 ~ "c1",
+                       TRUE       ~ "c2")) %>%
+  group_by(c) %>%
+  summarise(m =  mean(taux))
+```
+
+
+
+## 2.2. ggplot
+
+## 2.3. Les autres packages de tidyverse
+
+
+

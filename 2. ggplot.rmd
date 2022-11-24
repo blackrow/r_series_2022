@@ -13,6 +13,11 @@ knitr::opts_chunk$set(echo = TRUE)
 
 ## 2.2. ggplot2
 
+```{r}
+library(tidyverse)
+```
+
+
 ### a. Introduction (ppt)
 
 ### b. les données utilisées
@@ -32,10 +37,11 @@ pour dessiner une graphique il faut utiliser les trois couches principales pour 
 
 ```{r}
 ## couche des donnée
-
+iris %>%
 ## couches esthétique + appel de la fonction ggplot
-
+  ggplot(aes(x = Sepal.Width, y = Sepal.Length)) +
 ## couche geométrie
+  geom_point()
 ```
 
 #### Utiliser l'esthétique en géométrie
@@ -44,10 +50,11 @@ reprendre le même code de la section précédente
 
 ```{r}
 ## couche des donnée
-
-## appel de la fonction ggplot
-
-## couche geométrie + couche esthétique
+iris %>%
+## couches esthétique + appel de la fonction ggplot
+  ggplot() +
+## couche geométrie
+  geom_point(aes(x = Sepal.Width, y = Sepal.Length))
 ```
 
 #### argument sans esthétique 
@@ -56,17 +63,37 @@ reprendre le même code en changeant la couleur la taille et la forme des points
 
 ```{r}
 ## couche des donnée
-
+iris %>%
 ## couches esthétique + appel de la fonction ggplot
-
-## couche geométrie + modifications
+  ggplot(aes(x = Sepal.Width, y = Sepal.Length))  +
+## couche geométrie
+  geom_point(col = "red", shape = 4, size = 2)
 ```
 
 ### faites attention à l'esthétique 
 ```{r}
 ## coleur à l'intérieur de l'esthétique
+## couche des donnée
+iris %>%
+## couches esthétique + appel de la fonction ggplot
+  ggplot(aes(x = Sepal.Width, y = Sepal.Length))  +
+## couche geométrie
+  geom_point(aes(col = "green"))
+
+## couche des donnée
+iris %>% filter(Species == "setosa") %>%
+## couches esthétique + appel de la fonction ggplot
+  ggplot(aes(x = Sepal.Width, y = Sepal.Length))  +
+## couche geométrie
+  geom_point(aes(col = Species))
 
 ## couleur à l'extérieur
+
+iris %>%
+## couches esthétique + appel de la fonction ggplot
+  ggplot(aes(x = Sepal.Width, y = Sepal.Length))  +
+## couche geométrie
+  geom_point(col = "green")
 ```
 
 #### les échelles
@@ -75,8 +102,14 @@ Utiliser **scale_*()** pour ajouter une couche d'échelle
 
 ```{r}
 ### graphique 
-
+iris %>%
+## couches esthétique + appel de la fonction ggplot
+  ggplot(aes(x = Sepal.Width, y = Sepal.Length))  +
+## couche geométrie
+  geom_point(aes(col = Species)) +
 ## couche échelle
+  scale_x_continuous(limits = c(1,5),
+                     breaks = seq(1,5,0.1))
 ```
 
 #### échelle de couleurs
@@ -85,8 +118,13 @@ changer les couleur de la variable species
 
 ```{r}
 ### graphique
-
+iris %>%
+## couches esthétique + appel de la fonction ggplot
+  ggplot(aes(x = Sepal.Width, y = Sepal.Length))  +
+## couche geométrie
+  geom_point(aes(col = Species)) +
 ## échelle de couleurs
+  scale_color_brewer(palette = "Pastel1")
 ```
 
 #### autres géométries
@@ -95,30 +133,62 @@ Tracer une boite à moustaches pour Sepal Width
 
 ```{r}
 ### Graphique
+
+iris %>%
+  ggplot(aes(y = Sepal.Width)) +
+  geom_boxplot()
+
+iris %>%
+  ggplot(aes(y = Sepal.Width, x = Species, col = Species)) +
+  geom_boxplot()
 ```
 
 Tracer un histogramme pour Sepal Length
 
 ```{r}
 ### Graphique
+
+iris %>%
+  ggplot(aes(x = Sepal.Length)) +
+  geom_histogram()
 ```
 
 Tracer une densité pour Petal Width
 
 ```{r}
 ### Graphique
+iris %>%
+  ggplot(aes(x = Sepal.Length)) +
+  geom_density(fill = "red")
+
+iris %>%
+  ggplot(aes(x = Sepal.Length)) +
+  geom_density(aes(fill = Species), alpha = 0.5)
 ```
 
 Tracer un diagramme à baton pour species
 
 ```{r}
 ### Graphique
+iris %>%
+  count(Species) %>%
+  ggplot(aes(x = Species, y = n)) +
+  geom_col()
 ```
 
 Ajouter des étiquettes au graphique précédent
 
 ```{r}
 ### Graphique
+iris %>%
+  count(Species) %>%
+  ggplot(aes(x = Species, y = n)) +
+  geom_col() + 
+  labs(x = "Espèces",
+       y = "fréquence",
+       title = "Diagramme à baton",
+       subtile = "fréquence d'espèces",
+       caption = "R series 2022")
 ```
 
 #### labs
@@ -128,10 +198,41 @@ Modifier le dernier graphique avec labs
 ```{r}
 ### graphique
 
+
 ## labs()
 ```
 
 #### Les facettes 
 
+```{r}
+iris %>%
+## couches esthétique + appel de la fonction ggplot
+  ggplot(aes(x = Sepal.Width, y = Sepal.Length))  +
+## couche geométrie
+  geom_point() +
+  facet_grid(~Species)
+
+
+iris %>%
+## couches esthétique + appel de la fonction ggplot
+  ggplot(aes(x = Sepal.Width, y = Sepal.Length))  +
+## couche geométrie
+  geom_point() +
+  facet_grid(Species ~.)
+```
+
 
 #### les thèmes
+
+```{r}
+library(ggthemes)
+
+iris %>%
+## couches esthétique + appel de la fonction ggplot
+  ggplot(aes(x = Sepal.Width, y = Sepal.Length))  +
+## couche geométrie
+  geom_point() +
+  facet_grid(~Species) + 
+    theme_stata()
+```
+
